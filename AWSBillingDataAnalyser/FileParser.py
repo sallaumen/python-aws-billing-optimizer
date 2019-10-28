@@ -6,11 +6,14 @@ class FileParser:
     def parse_csv():
         df = pd.read_csv('./dataset/aws-cur-report-sample.csv', sep=',')
         df = FileParser.create_index(df)
-        for row in df:
-            df[row].fillna('???', inplace=True)
-        #raw['UsageType'].fillna('???', inplace=True)
-        #raw[tag_name].fillna('???', inplace=True)
+        FileParser._fill_null_fields(df)
+
         return df
+
+    @staticmethod
+    def _fill_null_fields(df):
+        for column in df:
+            df[column].fillna('???', inplace=True)
 
     @staticmethod
     def create_index(df):
