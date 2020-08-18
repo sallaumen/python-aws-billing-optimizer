@@ -12,19 +12,26 @@ class CurProcessor:
     def graph_cost_by_product(self, product_code):
         # Custo por produto(Bom filtrar para ProductCode = EC2 *) X = UsageStartDate Y = Unblended Cost, Comparador =
         # PricingTerm(Variações de EC2)
-        df = self._filtered_by_ProductCode(product_code)
+        df = self._filtered_by_product_code(product_code)
 
         date_field = 'lineItem/UsageStartDate'
-        df['lineItem/UnblendedCost'] = df['lineItem/UnblendedCost']  # .astype(float)
+        # df['lineItem/UnblendedCost'] = df['lineItem/UnblendedCost']  # .astype(float)
         df = self._simplify_date(date_field, df)
 
-        df.plot.bar(x=date_field, y=['lineItem/UnblendedCost', 'lineItem/ProductCode'], stacked=True)
+        # df.plot.bar(x=date_field, y=['lineItem/UnblendedCost', 'lineItem/ProductCode'], stacked=True) #desejado
+        df.plot.bar(x=date_field, y=['lineItem/UnblendedCost'], stacked=True)
 
         # df.plot.bar(x=date_field, y=['lineItem/ProductCode'], values=['TotalCost'], aggfunc=numpy.sum,
         #                        margins=True)
         plt.show()
 
-    def _simplify_date(self, date_field, df):
+# SELECT SUM('lineItem/UnblendedCost'), 'lineItem/UsageStartDate' from chart
+# where product_code = 'EC2'
+# group_by date('lineItem/UsageStartDate');
+
+
+    @staticmethod
+    def _simplify_date(date_field, df):
         df[date_field] = df[date_field].str.replace('T00:00:00Z', '')
         # df[date_field] = pd.to_datetime(df[date_field])
         return df
@@ -34,7 +41,7 @@ class CurProcessor:
         # PricingTerm
         pass
 
-    def _filtered_by_ProductCode(self, filter):
+    def _filtered_by_product_code(self, filter):
         df_copy = self.df
         # prevous_df_shape = df_copy.shape()
         drop_indexes = [index for index in df_copy.index if (filter in df_copy['lineItem/ProductCode'])]
