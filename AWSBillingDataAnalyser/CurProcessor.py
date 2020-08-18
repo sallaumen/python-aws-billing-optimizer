@@ -3,7 +3,8 @@ import pandas.plotting
 import matplotlib.pyplot as plt
 import numpy
 
-class CurProcessor():
+
+class CurProcessor:
 
     def __init__(self, df):
         self.df = df
@@ -14,12 +15,12 @@ class CurProcessor():
         df = self._filtered_by_ProductCode(product_code)
 
         date_field = 'lineItem/UsageStartDate'
-        df['lineItem/UnblendedCost'] = df['lineItem/UnblendedCost']#.astype(float)
+        df['lineItem/UnblendedCost'] = df['lineItem/UnblendedCost']  # .astype(float)
         df = self._simplify_date(date_field, df)
 
         df.plot.bar(x=date_field, y=['lineItem/UnblendedCost', 'lineItem/ProductCode'], stacked=True)
 
-        #df.plot.bar(x=date_field, y=['lineItem/ProductCode'], values=['TotalCost'], aggfunc=numpy.sum,
+        # df.plot.bar(x=date_field, y=['lineItem/ProductCode'], values=['TotalCost'], aggfunc=numpy.sum,
         #                        margins=True)
         plt.show()
 
@@ -35,10 +36,10 @@ class CurProcessor():
 
     def _filtered_by_ProductCode(self, filter):
         df_copy = self.df
-        #prevous_df_shape = df_copy.shape()
+        # prevous_df_shape = df_copy.shape()
         drop_indexes = [index for index in df_copy.index if (filter in df_copy['lineItem/ProductCode'])]
         df_copy.drop(drop_indexes)
-        #assert prevous_df_shape != df_copy.shape()
+        # assert prevous_df_shape != df_copy.shape()
         # remove_rule = df_copy.loc[(filer not in df_copy['lineItem/ProductCode'])]
         # df_copy = df_copy.drop(remove_rule.index)
         return df_copy
